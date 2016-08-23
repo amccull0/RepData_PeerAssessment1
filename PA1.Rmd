@@ -1,0 +1,89 @@
+---
+title: "PA1"
+author: "Adam McCullough"
+date: "August 23, 2016"
+output: html_document
+---
+##Step 1
+### Load and Process Data
+
+Load the data(note: the data file was downloaded and extracted to the working directory)
+```{r , echo=TRUE}
+activity<-read.csv("activity.csv")
+
+```
+
+##Step 2
+###Initial interpretation
+
+Sum the number of steps by day and create a histogram of the output
+```{r , echo=TRUE}
+library(dplyr)
+sum1<- na.omit(activity) %>% group_by(date) %>% summarize(Steps=sum(steps))
+hist(sum1$Steps, breaks = 10, xlab = "Steps", main = "Histogram of Steps by Day")
+meanbyday<-mean(sum1$Steps)
+meanbyday
+medianbydate<-median(sum1$Steps)
+medianbydate
+```
+
+##Step 3
+###Average daily activity
+
+Need to group and average steps by time interval, then plot a line graph
+```{r, echo=TRUE}
+library(dplyr)
+sum2<- na.omit(activity) %>% group_by(interval) %>% summarize(Steps=mean(steps))
+plot(sum2$interval,sum2$Steps, type = "l",xlab="Interval",ylab = "Steps",main = "Steps by Time Interval")
+
+```
+
+Now determine and output the interval with the max average value across all days
+```{r setup, echo=TRUE}
+subset(sum2, sum2$Steps == max(sum2$Steps))
+
+```
+
+##Step 4 
+###Imputing missing values
+
+Calculate the total number of rows with missing values
+```{r, echo=TRUE}
+sum(is.na(activity))
+```
+
+Fill in these missing values with the mean value for that time interval across all other days
+```{r, echo=TRUE}
+activity2<-activity
+activity2$steps[is.na(activity2$steps)] <- sum2$Steps[match(activity2$interval[is.na(activity2$steps)],sum2$interval)]
+```
+
+First summarize by day then, create histogram and output mean and median of imputted data
+```{r, echo=TRUE}
+sum3<- activity2 %>% group_by(date) %>% summarize(steps=sum(steps))
+hist(sum3$steps, breaks = 10, xlab = "Steps", main = "Histogram of Steps by Day")
+meanbyday2<-mean(sum3$steps)
+meanbyday2
+medianbydate2<-median(sum3$steps)
+medianbydate2
+```
+##Step 5
+###Weekdays vs Weekends
+
+Determine whether each date is a weekday or weekend
+```{r, echo=TRUE}
+activity2$weekday<-weekdays(as.POSIXlt(activity2$date))
+ activity2$wd<-ifelse(activity2$weekday %in% c("Sunday","Saturday"), "Weekend", "Weekday")
+```
+
+Plot two graphs representing the average steps by time interval grouped seperately by Weekday and Weekend
+```{r, echo=TRUE}
+par(mfrow=c(2,1))
+weekday<-activity2[activity2$wd=="Weekday",]
+plot1<- weekday %>% group_by(interval) %>% summarize(Steps=mean(steps))
+weekend<-activity2[activity2$wd=="Weekend",]
+plot2<- weekend %>% group_by(interval) %>% summarize(Steps=mean(steps))
+plot(plot1$interval,plot1$Steps, type = "l",xlab="Interval",ylab = "Steps",main = "Steps by Time Interval- Weekday")
+plot(plot2$interval,plot2$Steps, type = "l",xlab="Interval",ylab = "Steps",main = "Steps by Time Interval- Weekend")
+
+```
