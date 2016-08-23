@@ -41,7 +41,7 @@ sum1<- na.omit(activity) %>% group_by(date) %>% summarize(Steps=sum(steps))
 hist(sum1$Steps, breaks = 10, xlab = "Steps", main = "Histogram of Steps by Day")
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](figs/unnamed-chunk-2-1.png)<!-- -->
 
 ```r
 meanbyday<-mean(sum1$Steps)
@@ -72,7 +72,7 @@ sum2<- na.omit(activity) %>% group_by(interval) %>% summarize(Steps=mean(steps))
 plot(sum2$interval,sum2$Steps, type = "l",xlab="Interval",ylab = "Steps",main = "Steps by Time Interval")
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](figs/unnamed-chunk-3-1.png)<!-- -->
 
 Now determine and output the interval with the max average value across all days
 
@@ -114,7 +114,7 @@ sum3<- activity2 %>% group_by(date) %>% summarize(steps=sum(steps))
 hist(sum3$steps, breaks = 10, xlab = "Steps", main = "Histogram of Steps by Day")
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](figs/unnamed-chunk-6-1.png)<!-- -->
 
 ```r
 meanbyday2<-mean(sum3$steps)
@@ -155,4 +155,4 @@ plot(plot1$interval,plot1$Steps, type = "l",xlab="Interval",ylab = "Steps",main 
 plot(plot2$interval,plot2$Steps, type = "l",xlab="Interval",ylab = "Steps",main = "Steps by Time Interval- Weekend")
 ```
 
-![](PA1_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](figs/unnamed-chunk-8-1.png)<!-- -->
